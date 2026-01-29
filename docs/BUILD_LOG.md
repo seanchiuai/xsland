@@ -16,96 +16,46 @@ Append-only log of completed phases and actions taken.
 
 ---
 
-## Phase 2: Shared Data Model
+## Phases 2–5, 7: Code Implementation
 **Status**: COMPLETE
 **Date**: 2026-01-28
 **Done by**: Claude
 
 **Actions**:
-- Created `CreatorAnalyticsAttributes.swift` in `StarCyCreatorAnalytics/StarCyCreatorAnalytics/`
-- Contains: `CreatorAnalyticsAttributes` (ActivityAttributes), `TrendDirection` enum, `TopPostMetrics` struct
-- Imports: ActivityKit, SwiftUI, Foundation
+- Created all source files: CreatorAnalyticsAttributes, CreatorAnalyticsLiveActivity, CreatorAnalyticsWidgetBundle, LiveActivityManager, MockAnalytics, ContentView, App entry
+- Created README.md
+- Fixed missing `import Combine` in LiveActivityManager
 
 ---
 
-## Phase 3: Widget Extension (Dynamic Island UI)
+## Phase 6: Polish
+**Status**: COMPLETE
+**Date**: 2026-01-28
+**Done by**: Human (Xcode) + Claude
+
+**Actions**:
+- Added CreatorAnalyticsAttributes.swift to both target memberships
+- Removed Xcode-generated default widget files
+- Set signing teams for both targets
+- Build succeeded, app tested in Simulator
+
+---
+
+## Full Spec Redesign: Event-Driven + Personalized Baselines
 **Status**: COMPLETE
 **Date**: 2026-01-28
 **Done by**: Claude
 
 **Actions**:
-- Created `CreatorAnalyticsLiveActivity.swift` in `CreatorAnalyticsWidget/`
-- All four Dynamic Island presentations: compact, expanded, minimal, lock screen
-- Reusable components: MetricCell, TopPostRow, PostStat
-- Helper functions: formatEngagement, formatNumber, formatCompact
-- Preview providers for all four states
-- Uses `.contentTransition(.numericText())` on all numeric fields
-
----
-
-## Phase 4: Widget Bundle
-**Status**: COMPLETE
-**Date**: 2026-01-28
-**Done by**: Claude
-
-**Actions**:
-- Rewrote `CreatorAnalyticsWidgetBundle.swift` with only `CreatorAnalyticsLiveActivity()`
-- Deleted Xcode-generated defaults: `CreatorAnalyticsWidget.swift`, `CreatorAnalyticsWidgetLiveActivity.swift`, `CreatorAnalyticsWidgetControl.swift`
-
----
-
-## Phase 5: Main App
-**Status**: COMPLETE
-**Date**: 2026-01-28
-**Done by**: Claude
-
-**Actions**:
-- Created `LiveActivityManager.swift` — singleton with start/update/stop, activity observation
-- Created `MockAnalytics.swift` — random state generation with 5 sample posts
-- Rewrote `ContentView.swift` — state card, three control buttons, status indicator
-- Updated `StarCyCreatorAnalyticsApp.swift` — clean entry point wrapping ContentView
-
----
-
-## Phase 7: Documentation
-**Status**: COMPLETE
-**Date**: 2026-01-28
-**Done by**: Claude
-
-**Actions**:
-- Created `README.md` with all required sections: Overview, Metrics Selection, Design Decisions, When to Show Analytics, X API Integration, Running the Demo, Integration Guide, File Structure
-
----
-
-## Phase 6: Polish (In Progress)
-**Status**: IN PROGRESS
-**Date**: 2026-01-28
-**Done by**: Human (Xcode) + Claude (bug fix)
-
-**Actions**:
-- Added `CreatorAnalyticsAttributes.swift` to both target memberships (Human)
-- Removed Xcode-generated default widget files from project navigator (Human)
-- Fixed missing `import Combine` in `LiveActivityManager.swift` (Claude)
-- Build succeeded
-- Set signing teams for both targets (Human)
-- Build succeeded, app tested in Simulator (Human)
-- AccentColor skipped (cyan hardcoded in UI)
-
----
-
-## Redesign: Data-Dense Dynamic Island
-**Status**: COMPLETE
-**Date**: 2026-01-28
-**Done by**: Claude
-
-**Actions**:
-- Removed profile/handle/username from expanded view (user feedback: unnecessary for single-account use)
-- Removed TopPostMetrics struct and top post display (user feedback: hidden by space constraints)
-- Added new metrics based on research: profileVisits, linkClicks, followersTrend
-- Expanded view now shows: engagement + followers (large, top) and impressions + profile visits + link clicks (bottom row)
-- Lock Screen redesigned as 4-column metric pills (no profile info)
-- Updated ContentView card to show all new metrics
-- Updated MockAnalytics with new random data ranges
-- Updated README metrics table and design decisions
+- Implemented full metric logic spec from user's design doc
+- New data model: PrimaryMetricType enum (engagementRate, trending, reachMilestone, followerMomentum, linkClicks)
+- ContentState includes: baseline multipliers, velocity, tweet context, time windows, explainability string
+- Compact view is context-aware: shows different stat based on trigger type
+- Expanded view: primary stat with baseline comparison, supporting stat, tweet context, follower delta, "why shown" explainability line
+- Lock Screen: trigger badge + core trio + optional link clicks
+- MockAnalytics generates 5 realistic trigger scenarios
+- Removed TopPostMetrics, profileVisits (per spec: low actionability)
+- Added conditional link clicks (only for link-driven creators)
+- README rewritten to match full spec
 
 ---
